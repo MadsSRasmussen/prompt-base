@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --env-file --allow-env --allow-read --watch main.ts",
+    "db:init": "deno run --allow-read --allow-env --allow-net --env-file mysql-operations/initialize-tables.ts",
+    "db:read": "deno run --allow-read --allow-env --allow-net --env-file mysql-operations/read-tables.ts"
+  },
+  "imports": {
+    "@oak/oak": "jsr:@oak/oak@^17.1.3",
+    "mysql2": "npm:mysql2@^3.11.4"
+  }
+}
