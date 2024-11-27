@@ -8,8 +8,7 @@ const _connection = await createDbConnection();
 
 const router = new Router();
 router.get("/", (ctx) => {
-    ctx.response.body = { _connection };
-
+  ctx.response.body = { _connection };
 });
 
 app.use(router.routes());
