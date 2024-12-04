@@ -20,8 +20,7 @@ collections.get("/:id", async (c) => {
   const coll = await db.collections.getById(Number(collId));
 
   if (!coll) throw new HTTPException(404);
-
-  if (coll && (coll.organisation_id !== apiKey.organisation_id)) {
+  if (coll.organisation_id !== apiKey.organisation_id) {
     throw new HTTPException(401);
   }
 
@@ -37,7 +36,6 @@ collections.get("/:id/prompts", async (c) => {
   const orgSet = new Set<number>();
   prompts.forEach((prompt) => orgSet.add(prompt.collection_id));
   if (orgSet.size !== 1) throw new HTTPException(500);
-
   if (!orgSet.has(apiKey.organisation_id)) throw new HTTPException(401);
 
   return c.json(prompts);
