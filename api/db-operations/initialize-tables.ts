@@ -35,7 +35,6 @@ await conn.query(
   "CREATE TABLE IF NOT EXISTS Collection ( " +
     "id SERIAL PRIMARY KEY, " +
     "name VARCHAR(255) NOT NULL, " +
-    "public BOOLEAN NOT NULL DEFAULT 0, " +
     "fb_user_id VARCHAR(28) NOT NULL, " +
     "organisation_id BIGINT UNSIGNED NOT NULL, " +
     "FOREIGN KEY (organisation_id) REFERENCES Organisation (id) " +
@@ -60,18 +59,22 @@ await conn.query("DELETE FROM Prompt");
 
 // Insert placeholder organisations
 await conn.query(
-  "INSERT INTO Organisation (name) VALUES (?)",
-  ["development-organisation"],
+  "INSERT INTO Organisation (name) VALUES (?), (?)",
+  ["development-organisation", "another-dev-organisation"],
 );
 
 // Insert placeholder apikeys
 
-const apiKey = encryption.generateKey();
-console.log(`ApiKey: ${apiKey}`);
-const hash = await encryption.hash(apiKey.split("sk-")[1]);
+const apiKey1 = encryption.generateKey();
+console.log(`ApiKey1: ${apiKey1}`);
+const hash1 = await encryption.hash(apiKey1);
+
+const apiKey2 = encryption.generateKey();
+console.log(`ApiKey2: ${apiKey2}`);
+const hash2 = await encryption.hash(apiKey2);
 await conn.query(
-  "INSERT INTO ApiKey (hash, name, organisation_id) VALUES (?, ?, ?)",
-  [hash, "development-key", 1],
+  "INSERT INTO ApiKey (hash, name, organisation_id) VALUES (?, ?, ?), (?, ?, ?)",
+  [hash1, "development-key", 1, hash2, "another-development-key", 2],
 );
 
 // Insert placeholder collections

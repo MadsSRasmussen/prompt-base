@@ -23,7 +23,7 @@ async function getCollectionsOrgId(orgId: number) {
     "SELECT * FROM Collection WHERE organisation_id = ?",
     [orgId],
   );
-  return colls[0] ? colls as Collection[] : null;
+  return colls as Collection[];
 }
 
 export default {

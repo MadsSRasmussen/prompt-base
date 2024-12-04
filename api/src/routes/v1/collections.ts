@@ -1,84 +1,45 @@
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import db from "../../services/db/index.ts";
-import { Collection } from "#types";
+import { getApiKeyEntryFromCtx } from "../../utils/helpers.ts";
+import { HTTPException } from "hono/http-exception";
 
 const collections = new Hono();
 
 collections.get("/", async (c) => {
-  const authHeader = c.req.header("Authorization");
+  const apiKey = await getApiKeyEntryFromCtx(c);
 
-  if (!authHeader) throw new HTTPException(401);
+  const colls = await db.collections.getByOrgId(apiKey.organisation_id);
 
-  const authHeaderSplits = authHeader.split("-");
-  if (authHeaderSplits.length < 2) {
-    throw new HTTPException(401);
-  }
-
-  const orgQuery = c.req.queries("org");
-  const idQuery = c.req.queries("id");
-  const nameQuery = c.req.queries("name");
-
-  switch (authHeaderSplits[0]) {
-    case "Bearer st": {
-      if (!orgQuery) throw new HTTPException(400);
-
-      const promises: Promise<
-        { orgId: string; collections: (Collection | null)[] | null } | null
-      >[] = [];
-      orgQuery.forEach((org) => {
-        const getCollections = async () => {
-          if (idQuery) {
-            const idPromises: Promise<Collection | null>[] = [];
-            idQuery.forEach((id) =>
-              idPromises.push(db.collections.getById(Number(id)))
-            );
-            const colls = await Promise.all(idPromises);
-            return {
-              orgId: org,
-              collections: colls,
-            };
-          } else if (nameQuery) {
-            const namePromises: Promise<Collection | null>[] = [];
-            nameQuery.forEach((name) =>
-              namePromises.push(db.collections.getByName(Number(org), name))
-            );
-            const colls = await Promise.all(namePromises);
-            return {
-              orgId: org,
-              collections: colls,
-            };
-          } else {
-            const colls = await db.collections.getByOrgId(Number(org));
-            return {
-              orgId: org,
-              collections: colls,
-            };
-          }
-        };
-        promises.push(getCollections());
-      });
-      const organisationCollections = await Promise.all(promises);
-      return c.json(organisationCollections);
-    }
-    case "Bearer sk": {
-      throw new HTTPException(400);
-    }
-    default: {
-      throw new HTTPException(401);
-    }
-  }
+  return c.json(colls);
 });
 
 collections.get("/:id", async (c) => {
+  const apiKey = await getApiKeyEntryFromCtx(c);
+
   const collId = c.req.param("id");
   const coll = await db.collections.getById(Number(collId));
+
+  if (!coll) throw new HTTPException(404);
+
+  if (coll && (coll.organisation_id !== apiKey.organisation_id)) {
+    throw new HTTPException(401);
+  }
+
   return c.json(coll);
 });
 
 collections.get("/:id/prompts", async (c) => {
+  const apiKey = await getApiKeyEntryFromCtx(c);
+
   const collId = c.req.param("id");
   const prompts = await db.prompts.getByCollection(Number(collId));
+
+  const orgSet = new Set<number>();
+  prompts.forEach((prompt) => orgSet.add(prompt.collection_id));
+  if (orgSet.size !== 1) throw new HTTPException(500);
+
+  if (!orgSet.has(apiKey.organisation_id)) throw new HTTPException(401);
+
   return c.json(prompts);
 });
 

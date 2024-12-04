@@ -8,7 +8,6 @@ export interface Prompt {
 export interface Collection {
   id: number;
   name: string;
-  publlic: boolean;
   fb_user_id: string;
   organisation_id: number;
 }
