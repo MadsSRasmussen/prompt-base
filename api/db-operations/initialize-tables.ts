@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2";
 import { createDbConnection } from "../src/configs/mysql.ts";
+import encryption from "../src/utils/encryption.ts";
 
 const fb_user_id = "yhuqsg8U2YXzUPIfTP6n9q0Hzox2";
 
@@ -7,6 +8,7 @@ const conn = await createDbConnection();
 
 await conn.query("DROP TABLE IF EXISTS Prompt");
 await conn.query("DROP TABLE IF EXISTS Collection");
+await conn.query("DROP TABLE IF EXISTS ApiKey");
 await conn.query("DROP TABLE IF EXISTS Organisation");
 
 // Create Organisation table
@@ -20,7 +22,8 @@ await conn.query(
 // Create ApiKey table
 await conn.query(
   "CREATE TABLE IF NOT EXISTS ApiKey ( " +
-    "hashed_value VARCHAR(255) PRIMARY KEY, " +
+    "id SERIAL PRIMARY KEY, " +
+    "hash CHAR(64) UNIQUE NOT NULL, " +
     "name VARCHAR(255), " +
     "organisation_id BIGINT UNSIGNED NOT NULL, " +
     "FOREIGN KEY (organisation_id) REFERENCES Organisation (id) " +
@@ -62,9 +65,13 @@ await conn.query(
 );
 
 // Insert placeholder apikeys
+
+const apiKey = encryption.generateKey();
+console.log(`ApiKey: ${apiKey}`);
+const hash = await encryption.hash(apiKey.split("sk-")[1]);
 await conn.query(
-  "INSERT INTO ApiKey (hashed_value, name, organisation_id) VALUES (?, ?, ?)",
-  ["MOCK-HASH", "development-key", 1],
+  "INSERT INTO ApiKey (hash, name, organisation_id) VALUES (?, ?, ?)",
+  [hash, "development-key", 1],
 );
 
 // Insert placeholder collections

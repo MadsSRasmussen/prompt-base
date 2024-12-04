@@ -12,3 +12,10 @@ export interface Collection {
   fb_user_id: string;
   organisation_id: number;
 }
+
+export interface ApiKey {
+  id: number;
+  hash: string;
+  name: string;
+  organisation_id: number;
+}

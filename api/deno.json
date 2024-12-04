@@ -6,6 +6,7 @@
   },
   "imports": {
     "#types": "../shared/types/index.ts",
+    "crypto": "jsr:@std/crypto@^1.0.3",
     "hono": "jsr:@hono/hono@^4.6.12",
     "firebase-admin": "npm:firebase-admin@^13.0.1",
     "mysql2": "npm:mysql2@^3.11.4"
