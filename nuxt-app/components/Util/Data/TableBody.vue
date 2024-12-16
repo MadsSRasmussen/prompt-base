@@ -28,8 +28,8 @@ function remapDropdownDescription(row: DataTableRowDescription<T>): DropdownItem
     class="flex gap-2 text-gray-500 dark:text-gray-400 text-sm px-4 py-4"
     :class="`${row.to ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50' : ''}${index !== rows.length - 1 ? ' border-b border-gray-200 dark:border-gray-700' : ''}`">
     <div class="flex-grow grid grid-cols-3 gap-2"
-      :style="{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }">
-      <div v-for="(column, index) in columns" class="flex gap-2 align-middle">
+      :style="{ gridTemplateColumns: columns.map(column => column.weight ? `${column.weight}fr` : '1fr').join(' ') }">
+      <div v-for="(column, index) in columns" class="flex gap-2 align-middle" :style="column.weight ? `flex-grow: ${column.weight}` : ''">
         <div v-if="anyHasIcon && index == 0" class="w-4 min-w-4">
           <UIcon v-if="row.icon" class="w-full h-full" :name="row.icon" />
         </div>

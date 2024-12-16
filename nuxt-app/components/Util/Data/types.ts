@@ -7,6 +7,7 @@ export type DataTableRowDescription<T extends Record<string, any>> = {
 export type DataTableColumnDescription<T extends Record<string, any>> = {
   key: keyof T;
   label: string;
+  weight?: number;
 };
 export type DropdownTableDescription<T extends Record<string, any>> = {
   label: string;

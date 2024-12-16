@@ -1,7 +1,7 @@
 <template>
     <LayoutSectionContainer>
-        <LayoutSection title="Collections">
-            <SpecificCollectionsTable />
+        <LayoutSection title="Prompts">
+            <SpecificPromptsTable />
         </LayoutSection>
     </LayoutSectionContainer>
 </template>

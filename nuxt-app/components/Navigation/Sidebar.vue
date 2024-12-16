@@ -1,13 +1,32 @@
 <script setup lang="ts">
-const links = [{
+import { useCurrentUser } from '~/composables/firebase/useCurrentUser';
+
+const { user } = useCurrentUser();
+const route = useRoute();
+
+const links = computed(() => [[{
+  label: user.value?.fb.displayName ?? 'Unknown user',
+  avatar: {
+    src: user.value?.fb.photoURL ?? '',
+  },
+  to: '/profile',
+}], [{
   label: 'Home',
   icon: 'i-heroicons-home',
   to: '/'
 }, {
-  label: 'Collections',
-  icon: 'i-heroicons-chart-bar',
-  to: '/collections'
-}]
+  label: 'Prompts',
+  icon: 'i-heroicons-circle-stack',
+  to: route.path.startsWith('/collections') ? route.path : '/collections'
+}, {
+  label: 'Playground',
+  icon: 'i-heroicons-code-bracket-square',
+  to: '/playground'
+}], [{
+  label: 'Organisations',
+  icon: 'i-heroicons-building-office-2',
+  to: '/organisations',
+}]]);
 </script>
 
 <template>
