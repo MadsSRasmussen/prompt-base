@@ -1,11 +1,11 @@
 import { validateUserAndOrgAccess } from "~/server/utils/auth";
 import db from "~/server/utils/db"
 import { assertHeaders, parseBody } from "~/server/utils/request-helpers";
-import { CollectionsPutBodySchema } from "~/server/utils/schemas/request";
+import { CollectionsPromptPostBodySchema } from "~/server/utils/schemas/request";
 
 export default defineEventHandler(async (event) => {
     const headers = assertHeaders(event, ['authorization', 'x-mysql-user-id', 'x-organisation']);
-    const body = await parseBody(event, CollectionsPutBodySchema);
+    const body = await parseBody(event, CollectionsPromptPostBodySchema);
     await validateUserAndOrgAccess(headers);
 
     const cid = getRouterParam(event, 'cid');
@@ -15,8 +15,5 @@ export default defineEventHandler(async (event) => {
     if (!collection) throw createError({ status: 404 });
     if (collection.organisation_id !== Number(headers["x-organisation"])) throw createError({ status: 401 });
 
-    const updatedCollection = await db.collection.updateById(collection.id, body);
-    if (!updatedCollection) throw createError({ status: 500 });
-
-    return updatedCollection;
+    return await db.prompt.create(Number(cid), body.name, body.content);
 });

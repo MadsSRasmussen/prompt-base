@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import { pool } from "../../configs/mysql.ts";
-import type { Collection } from "#types";
+import type { Collection } from "../../../types/index.ts";
 
 async function getCollectionById(collId: number): Promise<Collection | null> {
   const [colls] = await pool.query<RowDataPacket[]>(

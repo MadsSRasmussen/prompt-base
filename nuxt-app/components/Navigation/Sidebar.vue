@@ -23,6 +23,10 @@ const links = computed(() => [[{
   icon: 'i-heroicons-code-bracket-square',
   to: '/playground'
 }], [{
+  label: 'Api Keys',
+  icon: 'i-heroicons-key',
+  to: '/keys'
+}, {
   label: 'Organisations',
   icon: 'i-heroicons-building-office-2',
   to: '/organisations',

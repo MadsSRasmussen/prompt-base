@@ -8,6 +8,7 @@ const colorMode = useColorMode();
       <slot></slot>
     </div>
   </div>
+  <UNotifications />
 </template>
 <style scoped>
 .light-shadow {

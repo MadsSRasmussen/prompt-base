@@ -1,8 +1,7 @@
-import type { Collection } from "~/types/db";
+import type { Prompt } from "~/types/db";
 import { authFetch } from "../utils/useAuthFetch";
-import type { ClientUser } from "~/types/client";
 
-export function useCollectionCreate(dataRef: Ref<Collection[] | null>) {
+export function usePromptCreate(cid: number, dataRef: Ref<Prompt[] | null>) {
 
     const toast = useToast();
 
@@ -23,11 +22,12 @@ export function useCollectionCreate(dataRef: Ref<Collection[] | null>) {
         pending.value = true;
         
         try {
-            const response = await authFetch<Collection>('/api/collections', 'POST', {
-                name: name.value
+            const response = await authFetch<Prompt>(`/api/collections/${cid}`, 'POST', {
+                name: name.value,
+                content: '',
             });
             dataRef.value.push(response);
-            toast.add({ title: `'${response.name}' was created` });
+            toast.add({ title: `'${response.name}' was created` })
         } catch (error) {
             console.error('An error occured submitting collection');
         } finally {

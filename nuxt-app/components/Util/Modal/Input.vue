@@ -17,7 +17,7 @@ defineProps<{
                 <h2 class="font-bold text-2xl">{{ title }}</h2>
             </template>
             <div class="flex flex-col gap-4">
-                <div class="text-sm text-gray-600">
+                <div class="text-sm text-gray-600 dark:text-gray-300">
                     {{ message }}
                 </div>
                 <div class="flex gap-4">

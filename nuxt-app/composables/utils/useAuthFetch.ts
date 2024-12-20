@@ -3,7 +3,7 @@ import type { ClientUser } from "~/types/client";
 import { useCurrentUser } from "../firebase/useCurrentUser";
 import type { NitroFetchRequest } from "nitropack"
 
-type AllowedMethod = 'GET' | 'POST' | 'PUT'
+type AllowedMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 export function useAuthFetch<T>(request: NitroFetchRequest, method: AllowedMethod = 'GET', body?: Record<string, any>) {
 

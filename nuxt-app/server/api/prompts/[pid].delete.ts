@@ -12,5 +12,11 @@ export default defineEventHandler(async (event) => {
     if (!prompt) throw createError({ status: 404 });
     if (prompt.organisation_id !== Number(headers["x-organisation"])) throw createError({ status: 401 });
 
-    return prompt;
-});
+    const deletedRows = await db.prompt.removeById(prompt.id);
+    
+    return {
+        deletions: {
+            prompts: deletedRows,
+        },
+    }
+})

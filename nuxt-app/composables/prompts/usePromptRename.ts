@@ -1,7 +1,7 @@
-import type { Collection } from "~/types/db";
+import type { Prompt } from "~/types/db";
 import { authFetch } from "../utils/useAuthFetch";
 
-export function useCollectionRename<T extends Collection>(dataRef: Ref<Collection[] | null>) {
+export function usePromptRename<T extends Prompt>(dataRef: Ref<Prompt[] | null>) {
 
     const toast = useToast();
 
@@ -9,16 +9,16 @@ export function useCollectionRename<T extends Collection>(dataRef: Ref<Collectio
     const display = ref<boolean>(false);
     const pending = ref<boolean>(false);
 
-    const collectionId = ref<number | null>(null);
+    const promptId = ref<number | null>(null);
 
     function displayModal(data: T) {
         name.value = data.name;
-        collectionId.value = data.id;
+        promptId.value = data.id;
         display.value = true;
     }
 
     async function submit() {
-        if (!collectionId.value) throw new Error('Invalid collection id');
+        if (!promptId.value) throw new Error('Invalid prompt id');
         if (!name.value) throw new Error('Invalid name');
         if (!dataRef.value) throw new Error('No data');
         if (pending.value) return;
@@ -26,17 +26,18 @@ export function useCollectionRename<T extends Collection>(dataRef: Ref<Collectio
         pending.value = true;
 
         try {
-            const response = await authFetch<Collection>(`/api/collections/${collectionId.value}`, 'PUT', {
+            const response = await authFetch<Prompt>(`/api/prompts/${promptId.value}`, 'PUT', {
                 name: name.value
             });
             const index = dataRef.value.findIndex(coll => coll.id === response.id);
             if (index === -1) throw new Error('Unable to find entry');
+
             dataRef.value[index] = response;
             toast.add({ title: `'${response.name}' was renamed` })
         } catch (error) {
-            console.error('An error occurred during collection update');            
+            console.error('An error occured during prompt update');
         } finally {
-            collectionId.value = null;
+            promptId.value = null;
             pending.value = false;
             display.value = false;
         }
@@ -50,4 +51,4 @@ export function useCollectionRename<T extends Collection>(dataRef: Ref<Collectio
         submit,
     }
 
-};
+}

@@ -33,7 +33,7 @@ async function create(name: string, orgId: number) {
     return rows[0] as Collection;
 }
 
-async function update(cid: number, fields: Partial<Collection>): Promise<Collection | null> {
+async function updateById(cid: number, fields: Partial<Collection>): Promise<Collection | null> {
     const keys = Object.keys(fields);
     const values = Object.values(fields);
 
@@ -54,10 +54,20 @@ async function update(cid: number, fields: Partial<Collection>): Promise<Collect
     return rows[0] ? rows[0] as Collection : null;
 }
 
+async function removeById(cid: number): Promise<number> {
+    const [delResult] = await pool.query<ResultSetHeader>(
+        "DELETE FROM Collection WHERE id = ?",
+        [cid]
+    );
+
+    return delResult.affectedRows
+}
+
 
 export default {
     getById,
     getByOrgId,
     create,
-    update,
+    updateById,
+    removeById,
 }

@@ -21,3 +21,11 @@ export type User = {
     display_name: string,
     email: string,
 }
+
+export type ApiKey = {
+    id: number,
+    name: string,
+    peek: string,
+    created_at: string,
+    organisation_id: number,
+}
