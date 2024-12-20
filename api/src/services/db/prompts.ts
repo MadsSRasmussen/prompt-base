@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import { pool } from "../../configs/mysql.ts";
-import type { Prompt } from "#types";
+import type { Prompt } from "../../../types/index.ts";
 
 async function getPromptById(
   promptId: number,

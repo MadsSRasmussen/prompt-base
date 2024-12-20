@@ -16,5 +16,7 @@ export interface ApiKey {
   id: number;
   hash: string;
   name: string;
+  peek: string;
+  created_at: string;
   organisation_id: number;
 }

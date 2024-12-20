@@ -1,0 +1,33 @@
+<script setup lang="ts">
+const display = defineModel<boolean>('display');
+const input = defineModel<string>('input');
+const select = defineModel<string | number | Record<string, any>>('select');
+defineEmits(['submit'])
+defineProps<{
+    title: string,
+    options: string[];
+    message?: string,
+    placeholder?: string,
+    buttonLabel?: string,
+    pending?: boolean,
+}>();
+</script>
+<template>
+    <UModal v-model="display">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <template #header>
+                <h2 class="font-bold text-2xl">{{ title }}</h2>
+            </template>
+            <div class="flex flex-col gap-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                    {{ message }}
+                </div>
+                <UInput @keyup.enter="$emit('submit')" v-model="input" :placeholder="placeholder" class="flex-grow"/>
+                <div class="flex gap-4">
+                    <USelect @keyup.enter="$emit('submit')" class="flex-grow" v-model="select" :options="options" placeholder="Spørgsmålstype"/>
+                    <UButton color="gray" :label="buttonLabel ? buttonLabel : 'Submit'" @click="$emit('submit')" :loading="pending" :disabled="pending" />
+                </div>
+            </div>
+        </UCard>
+    </UModal>
+</template>
